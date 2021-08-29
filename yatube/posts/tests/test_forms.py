@@ -21,7 +21,7 @@ class PostCreateFormTests(TestCase):
             author=cls.user,
             text='тестовая группа'
         )
-        cls.group = Group.objects.create(title='Тестовая', slug='test')
+        cls.group = Group.objects.create(title='Тестовая группа', slug='test')
 
     @classmethod
     def tearDownClass(cls):
@@ -41,7 +41,7 @@ class PostCreateFormTests(TestCase):
         post_count = Post.objects.count()
 
         form_data = {
-            'group': self.group.id,
+            'group': self.group,
             'text': 'Тестовый текст',
         }
         response = self.authorized_client.post(
