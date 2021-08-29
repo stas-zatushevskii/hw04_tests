@@ -32,7 +32,7 @@ class PostPagesTests(TestCase):
         templates_pages_names = {
             'posts/index.html': reverse('posts:index'),
             'posts/group_list.html': reverse(
-                'posts:post_list', kwargs={'slug': 'test-slug'}),
+                'posts:group_posts', kwargs={'slug': 'test-slug'}),
             'posts/profile.html': reverse(
                 'posts:profile', kwargs={'username': self.user.username}),
             'posts/post_detail.html': reverse(
@@ -48,7 +48,7 @@ class PostPagesTests(TestCase):
     def test_post_list_page_show_correct_context(self):
         """Шаблон post_list сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse('posts:index'))
-        first_object = response.context['post_list'][0]
+        first_object = response.context['group_posts'][0]
         task_author_0 = f'{first_object.author}'
         task_text_0 = first_object.text
         self.assertEqual(task_author_0, f'{self.post.author}')
