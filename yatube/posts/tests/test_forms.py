@@ -32,6 +32,7 @@ class PostCreateFormTests(TestCase):
         # Создаем неавторизованный клиент
         self.guest_client = Client()
         self.author_client = Client()
+        self.user = User.objects.create_user(username='StasZatushevskii')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.author_client.force_login(self.user)
@@ -49,9 +50,9 @@ class PostCreateFormTests(TestCase):
             follow=True
         )
         self.assertRedirects(response, reverse('posts:profile',
-                             kwargs={'username': self.user.username}))
+                             args=(self.user.username)))
         self.assertEqual(Post.objects.count(), post_count + 1)
-        self.assertTrue(
+        self.assertTrue(    
             Post.objects.filter(
                 text='Тестовый текст',
                 group='Тестовая группа'
