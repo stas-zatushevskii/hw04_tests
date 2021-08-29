@@ -49,7 +49,7 @@ class PostCreateFormTests(TestCase):
             data=form_data,
             follow=True
         )
-        self.assertRedirects(response, reverse('profile',
+        self.assertRedirects(response, reverse('posts:profile',
                              kwargs={'username': 'test_user'}))
         self.assertEqual(Post.objects.count(), post_count + 1)
         self.assertTrue(
