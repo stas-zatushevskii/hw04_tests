@@ -16,7 +16,7 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='authh')
+        cls.user = User.objects.create_user(username='auth')
         cls.post = Post.objects.create(
             author=cls.user,
             text='тестовая группа'
@@ -32,7 +32,6 @@ class PostCreateFormTests(TestCase):
         # Создаем неавторизованный клиент
         self.guest_client = Client()
         self.author_client = Client()
-        self.user = User.objects.create_user(username='StasZatushevskii')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.author_client.force_login(self.user)
