@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+  <head>  
+    {% block title %}{{post.text}}{% endblock %}
+  </head>
+  <body>       
+    <header>
+      {% include 'posts/includes/header.html' %}     
+    </header>
+    <main>
+    {% for post in posts %}
+      <div class="row">
+        <aside class="col-12 col-md-3">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              Дата публикации: {{post.pub_date}}
+            </li>
+            <!-- если у поста есть группа -->   
+              <li class="list-group-item">
+                Группа: {{ post.post_group }}
+                {% if post.group %} 
+                  <a href="{% url 'posts:group_posts' post.group.slug %}">все записи группы</a>
+                {% endif %}
+              </li>
+              <li class="list-group-item">
+                Автор: {{post.author.get_full_name}}
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+              Всего постов автора:  <span >{{post.post_count}}</span>
+            </li>
+            <li class="list-group-item">
+              <a href="<!-- -->">
+                все посты пользователя {{post.user_post}}
+              </a>
+            </li>
+          </ul>
+        </aside>
+        <article class="col-12 col-md-9">
+          <p>{{post.text}}</p>
+        </article>
+      </div>
+    {% endfor %} 
+    </main>
+    <footer class="border-top text-center py-3">
+      {% include 'posts/includes/footer.html' %}    
+    </footer>
+  </body>
+</html
