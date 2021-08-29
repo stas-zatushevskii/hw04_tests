@@ -35,7 +35,7 @@ class PostCreateFormTests(TestCase):
         self.user = User.objects.create_user(username='StasZatushevskii')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        self.author_client.force_login(self.author)
+        self.author_client.force_login(self.user)
 
     def test_create_post(self):
         post_count = Post.objects.count()
