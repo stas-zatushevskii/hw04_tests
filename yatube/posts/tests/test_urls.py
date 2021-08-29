@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class StaticURLTests(TestCase):
     def setUp(self):
         # Устанавливаем данные для тестирования
@@ -34,7 +35,7 @@ class PostsUrlsTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username = 'auth')
+        cls.user = User.objects.create_user(username='auth')
         cls.post = Post.objects.create(
             author=cls.user,
             text='тестовая группа',
@@ -44,27 +45,27 @@ class PostsUrlsTest(TestCase):
             slug='test-slug',
             description='Тестовое описание',
         )
-        
+
     def setUp(self):
         # неавторизированный клиент
         self.guest_client = Client()
-        # пользователь 
-        self.user = User.objects.create(username = 'HasNoName')
-        # авторизированный клиент 
+        # пользователь
+        self.user = User.objects.create(username='HasNoName')
+        # авторизированный клиент
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
     def test_urls_uses_correct_template(self):
         # Шаблон : адрес
         templates_url_names = {
-            'posts/index.html' : '/',
-            'posts/post_detail.html' : f'/posts/{self.post.id}/',
-            'posts/create_post.html' : '/create/',
-            'posts/profile.html' : f'/profile/{self.user.username}/',
-            'posts/group_list.html' : '/group/test-slug/'
+            'posts/index.html': '/',
+            'posts/post_detail.html': f'/posts/{self.post.id}/',
+            'posts/create_post.html': '/create/',
+            'posts/profile.html': f'/profile/{self.user.username}/',
+            'posts/group_list.html': '/group/test-slug/'
         }
 
         for template, adress in templates_url_names.items():
             with self.subTest(adress=adress):
                 response = self.authorized_client.get(adress)
-                self.assertTemplateUsed(response, template) 
+                self.assertTemplateUsed(response, template)

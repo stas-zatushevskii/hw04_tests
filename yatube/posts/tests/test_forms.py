@@ -12,18 +12,18 @@ User = get_user_model()
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
+
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username = 'auth')
+        cls.user = User.objects.create_user(username='auth')
         cls.post = Post.objects.create(
             author=cls.user,
             text='тестовая группа'
         )
-        cls.group = Group.objects.create(title='Тестовая',slug='test')
-        
+        cls.group = Group.objects.create(title='Тестовая', slug='test')
 
     @classmethod
     def tearDownClass(cls):
@@ -38,7 +38,6 @@ class PostCreateFormTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.author_client.force_login(self.author)
-
 
     def test_create_post(self):
         post_count = Post.objects.count()
@@ -74,6 +73,7 @@ class PostCreateFormTests(TestCase):
             data=form_data_edit,
             follow=True
         )
-        self.assertRedirects(response, reverse('profile',
-                        kwargs={'username': 'test_user'}))
+        self.assertRedirects(
+            response, reverse('profile', kwargs={'username': 'test_user'})
+                            )
         self.assertNotEqual(post, response)

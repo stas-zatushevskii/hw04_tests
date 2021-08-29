@@ -3,12 +3,13 @@ from ..models import Group, Post
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+
 class PostModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         '''тестовая запись'''
-        cls.user = User.objects.create_user(username = 'auth')
+        cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
             title='тестовое название',
             slug='тестовый слаг',

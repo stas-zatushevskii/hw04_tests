@@ -6,11 +6,12 @@ from posts.models import Post, Group
 
 User = get_user_model()
 
+
 class PostPagesTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username = 'auth')
+        cls.user = User.objects.create_user(usernam='auth')
         cls.post = Post.objects.create(
             author=cls.user,
             text='тестовый текст',
@@ -27,15 +28,20 @@ class PostPagesTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-
     def test_pages_uses_correct_template(self):
         """имя_html_шаблона: reverse(name)"""
         templates_pages_names = {
-            'posts/index.html' : reverse('posts:index'),
-            'posts/group_list.html' : reverse('posts:post_list', kwargs={'slug': 'test-slug'}),
-            'posts/profile.html' : reverse('posts:profile', kwargs={'username' : self.user.username}),
-            'posts/post_detail.html' : reverse('posts:post_detail', kwargs={'post_id': self.post.id}),
-            'posts/create_post.html' : reverse('posts:post_create'),
+            'posts/index.html': reverse('posts:index'),
+            'posts/group_list.html': reverse(
+                'posts:post_list', kwargs={'slug': 'test-slug'}
+                                            ),
+            'posts/profile.html': reverse(
+                'posts:profile', kwargs={'username': self.user.username}
+                                        ),
+            'posts/post_detail.html': reverse(
+                'posts:post_detail', kwargs={'post_id': self.post.id}
+                                            ),
+            'posts/create_post.html': reverse('posts:post_create'),
         }
 
         for template, reverse_name in templates_pages_names.items():
@@ -51,5 +57,3 @@ class PostPagesTests(TestCase):
         task_text_0 = first_object.text
         self.assertEqual(task_author_0, f'{self.post.author}')
         self.assertEqual(task_text_0, 'тестовый текст')
-
-   
