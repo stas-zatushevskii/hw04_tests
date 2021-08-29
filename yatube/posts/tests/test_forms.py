@@ -41,7 +41,7 @@ class PostCreateFormTests(TestCase):
         post_count = Post.objects.count()
 
         form_data = {
-            'group': self.group,
+            'group': 'Тестовая группа',
             'text': 'Тестовый текст',
         }
         response = self.authorized_client.post(
