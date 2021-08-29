@@ -1,10 +1,8 @@
 import shutil
 import tempfile
 
-from posts.forms import PostForm
 from posts.models import Post, Group
 from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -56,8 +54,8 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.count(), post_count+1)
         self.assertTrue(
             Post.objects.filter(
-                text='Тестовый текст',
-                group='Тестовая группа'
+                text = 'Тестовый текст',
+                group = 'Тестовая группа'
                 ).exists()
             )
 
@@ -66,14 +64,13 @@ class PostCreateFormTests(TestCase):
         form_data_edit = {
             'group': 'Тестовая группа',
             'text': 'Тестовый отредоктированный текст',
-        }
+            }
 
         response = self.author_client.post(
             reverse('posts:post_edit'),
             data=form_data_edit,
             follow=True
-        )
-        self.assertRedirects(
-            response, reverse('profile', kwargs={'username': 'test_user'})
-                            )
+            )
+        self.assertRedirects(response, reverse(
+    'profile', kwargs={'username': 'test_user'}))
         self.assertNotEqual(post, response)

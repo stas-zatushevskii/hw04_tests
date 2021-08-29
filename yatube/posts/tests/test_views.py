@@ -33,14 +33,11 @@ class PostPagesTests(TestCase):
         templates_pages_names = {
             'posts/index.html': reverse('posts:index'),
             'posts/group_list.html': reverse(
-                'posts:post_list', kwargs={'slug': 'test-slug'}
-                                            ),
+                'posts:post_list', kwargs={'slug': 'test-slug'}),
             'posts/profile.html': reverse(
-                'posts:profile', kwargs={'username': self.user.username}
-                                        ),
+                'posts:profile', kwargs={'username': self.user.username}),
             'posts/post_detail.html': reverse(
-                'posts:post_detail', kwargs={'post_id': self.post.id}
-                                            ),
+                'posts:post_detail', kwargs={'post_id': self.post.id}),
             'posts/create_post.html': reverse('posts:post_create'),
         }
 
