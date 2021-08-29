@@ -47,7 +47,7 @@ class PostPagesTests(TestCase):
 
     def test_post_list_page_show_correct_context(self):
         """Шаблон post_list сформирован с правильным контекстом."""
-        post = self.cls.post
+        post = self.post
         response = (self.authorized_client.get(
             reverse('posts:group_posts', kwargs={'slug': 'test-slug'})))
         self.assertEqual(response.context.get(
