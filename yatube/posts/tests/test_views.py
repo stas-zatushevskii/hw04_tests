@@ -1,76 +1,55 @@
-import shutil
-import tempfile
-
-from posts.models import Post, Group
-from django.conf import settings
-from django.test import Client, TestCase, override_settings
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
+from django.urls import reverse
+from posts.models import Post, Group
+
 User = get_user_model()
 
-TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
-
-@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
-class PostCreateFormTests(TestCase):
+class PostPagesTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth')
+        cls.user = User.objects.create_user(usernam='auth')
         cls.post = Post.objects.create(
             author=cls.user,
-            text='тестовая группа'
+            text='тестовый текст',
         )
-        cls.group = Group.objects.create(title='Тестовая', slug='test')
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+        cls.group = Group.objects.create(
+            title='тестовое название',
+            slug='test-slug',
+            description='Тестовое описание',
+        )
 
     def setUp(self):
-        # Создаем неавторизованный клиент
-        self.guest_client = Client()
-        self.author_client = Client()
+        # Создаем авторизованный клиент
         self.user = User.objects.create_user(username='StasZatushevskii')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        self.author_client.force_login(self.author)
 
-    def test_create_post(self):
-        post_count = Post.objects.count()
-
-        form_data = {
-            'group': self.group.id,
-            'text': 'Тестовый текст',
+    def test_pages_uses_correct_template(self):
+        """имя_html_шаблона: reverse(name)"""
+        templates_pages_names = {
+            'posts/index.html': reverse('posts:index'),
+            'posts/group_list.html': reverse(
+                'posts:post_list', kwargs={'slug': 'test-slug'}),
+            'posts/profile.html': reverse(
+                'posts:profile', kwargs={'username': self.user.username}),
+            'posts/post_detail.html': reverse(
+                'posts:post_detail', kwargs={'post_id': self.post.id}),
+            'posts/create_post.html': reverse('posts:post_create'),
         }
-        response = self.guest_client.post(
-            reverse('posts:create_post'),
-            data=form_data,
-            follow=True
-        )
-        self.assertRedirects(response, reverse('profile',
-                             kwargs={'username': 'test_user'}))
-        self.assertEqual(Post.objects.count(), post_count+1)
-        self.assertTrue(
-            Post.objects.filter(
-                text='Тестовый текст',
-                group='Тестовая группа'
-                ).exists()
-            )
 
-    def post_edit_(self):
-        post = self.cls.post
-        form_data_edit = {
-            'group': 'Тестовая группа',
-            'text': 'Тестовый отредоктированный текст',
-            }
+        for template, reverse_name in templates_pages_names.items():
+            with self.subTest(reverse_name=reverse_name):
+                response = self.authorized_client.get(reverse_name)
+                self.assertTemplateUsed(response, template)
 
-        response = self.author_client.post(
-            reverse('posts:post_edit'),
-            data=form_data_edit,
-            follow=True
-            )
-        self.assertRedirects(response, reverse(
-            'profile', kwargs={'username': 'test_user'}))
-        self.assertNotEqual(post, response)
+    def test_post_list_page_show_correct_context(self):
+        """Шаблон post_list сформирован с правильным контекстом."""
+        response = self.authorized_client.get(reverse('posts:index'))
+        first_object = response.context['post_list'][0]
+        task_author_0 = f'{first_object.author}'
+        task_text_0 = first_object.text
+        self.assertEqual(task_author_0, f'{self.post.author}')
+        self.assertEqual(task_text_0, 'тестовый текст')
