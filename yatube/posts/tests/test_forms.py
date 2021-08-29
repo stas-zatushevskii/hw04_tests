@@ -16,7 +16,7 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth')
+        cls.user = User.objects.create_user(username='authh')
         cls.post = Post.objects.create(
             author=cls.user,
             text='тестовая группа'
