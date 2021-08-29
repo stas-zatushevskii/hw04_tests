@@ -51,4 +51,3 @@ class PostPagesTests(TestCase):
             reverse('posts:group_posts', kwargs={'slug': 'test-slug'})))
         self.assertEqual(response.context.get('post').author, f'{self.user}')
         self.assertEqual(response.context.get('post').text, 'тестовый текст')
-        
