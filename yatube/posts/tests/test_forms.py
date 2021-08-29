@@ -56,21 +56,21 @@ class PostCreateFormTests(TestCase):
             Post.objects.filter(
                 text='Тестовый текст',
                 group='Тестовая группа'
-                    ).exists()
-                )
+                        ).exists()
+                    )
 
     def post_edit_(self):
         post = self.cls.post
         form_data_edit = {
             'group': 'Тестовая группа',
             'text': 'Тестовый отредоктированный текст',
-                }
+                    }
 
         response = self.author_client.post(
             reverse('posts:post_edit'),
             data=form_data_edit,
             follow=True
-                )
+                    )
         self.assertRedirects(response, reverse(
             'profile', kwargs={'username': 'test_user'}))
         self.assertNotEqual(post, response)
