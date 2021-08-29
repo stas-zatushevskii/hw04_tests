@@ -10,9 +10,9 @@ class PostPagesTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='auth')
-        cls.post = Post.objects.create(
-            author=cls.user,
+        user = User.objects.create_user(username='auth')
+        Post.objects.create(
+            author=user,
             text='тестовый текст',
         )
         cls.group = Group.objects.create(
