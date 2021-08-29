@@ -45,7 +45,7 @@ class PostCreateFormTests(TestCase):
             'text': 'Тестовый текст',
         }
         response = self.guest_client.post(
-            reverse('posts:create_post'),
+            reverse('posts:post_create'),
             data=form_data,
             follow=True
         )
