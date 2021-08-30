@@ -49,5 +49,6 @@ class PostPagesTests(TestCase):
         """Шаблон post_list сформирован с правильным контекстом."""
         response = (self.authorized_client.get(
             reverse('posts:group_posts', kwargs={'slug': 'test-slug'})))
-        self.assertEqual(response.context.get('post').author, f'{self.user}')
-        self.assertEqual(response.context.get('post').text, 'тестовый текст')
+        self.assertEqual(response.context.get('group').title, 'тестовое название')
+        self.assertEqual(response.context.get('group').slug, 'test-slug')
+        self.assertEqual(response.context.get('group').description, 'Тестовое описание')
