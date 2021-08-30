@@ -50,5 +50,7 @@ class PostPagesTests(TestCase):
         response = (self.authorized_client.get(
             reverse('posts:group_posts', kwargs={'slug': 'test-slug'})))
         self.assertEqual(response.context.get('group').title, 'тестовое название')
-        self.assertEqual(response.context.get('group').slug, 'test-slug')
-        self.assertEqual(response.context.get('group').description, 'Тестовое описание')
+        self.assertEqual(
+            response.context.get('group').slug, 'test-slug')
+        self.assertEqual(
+            response.context.get('group').description, 'Тестовое описание')
