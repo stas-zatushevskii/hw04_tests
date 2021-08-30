@@ -35,7 +35,6 @@ def index(request):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    template = 'posts/profile.html'
     posts = Post.objects.filter(
         author=author)
     paginator = Paginator(posts, 10)
@@ -46,7 +45,7 @@ def profile(request, username):
         'page_obj': page_obj,
         'author': author
     }
-    return render(request, template, context)
+    return render(request, 'posts/profile.html', context)
 
 
 def post_detail(request, post_id):

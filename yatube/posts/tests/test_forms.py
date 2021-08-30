@@ -32,8 +32,8 @@ class PostCreateFormTests(TestCase):
         # Создаем неавторизованный клиент
         self.guest_client = Client()
         self.author_client = Client()
-        self.user = User.objects.create_user(username='StasZatushevskii')
         self.authorized_client = Client()
+        self.user = User.objects.create_user(username='StasZatushevskii')
         self.authorized_client.force_login(self.user)
         self.author_client.force_login(self.user)
 
@@ -41,7 +41,7 @@ class PostCreateFormTests(TestCase):
         post_count = Post.objects.count()
 
         form_data = {
-            'group': 'Тестовая группа',
+            'group': self.group.id,
             'text': 'Тестовый текст',
         }
         response = self.authorized_client.post(
@@ -55,7 +55,7 @@ class PostCreateFormTests(TestCase):
         self.assertTrue(
             Post.objects.filter(
                 text='Тестовый текст',
-                group='Тестовая группа'
+                group=self.group.id
             ).exists())
 
     def post_edit_(self):
