@@ -71,6 +71,6 @@ class PostCreateFormTests(TestCase):
             follow=True
         )
         self.assertRedirects(response, reverse(
-            'profile', kwargs={'username': 'test_user'})
+            'posts:profile', kwargs={'username': 'test_user'})
         )
         self.assertNotEqual(post, response)
