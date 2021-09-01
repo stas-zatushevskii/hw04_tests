@@ -2,6 +2,7 @@ import shutil
 import tempfile
 
 from posts.models import Post, Group
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
@@ -39,10 +40,27 @@ class PostCreateFormTests(TestCase):
 
     def test_create_post(self):
         post_count = Post.objects.count()
+        all_post_id = Post.objects.values_list()
+
+        small_gif = (            
+             b'\x47\x49\x46\x38\x39\x61\x02\x00'
+             b'\x01\x00\x80\x00\x00\x00\x00\x00'
+             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+             b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+             b'\x0A\x00\x3B'
+        )
+
+        uploaded = SimpleUploadedFile(
+            name='small.gif',
+            content=small_gif,
+            content_type='image/gif'
+        )
 
         form_data = {
             'group': self.group.id,
             'text': 'Тестовый текст',
+            'image': uploaded
         }
         response = self.authorized_client.post(
             reverse('posts:post_create'),
@@ -57,6 +75,10 @@ class PostCreateFormTests(TestCase):
                 text='Тестовый текст',
                 group=self.group.id
             ).exists())
+        self.assertNotEqual(Post.objects.filter(
+            text='Тестовый текст',
+            group=self.group.id
+        ), all_post_id)
 
     def post_edit_(self):
         post = self.cls.post
@@ -73,4 +95,5 @@ class PostCreateFormTests(TestCase):
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': 'test_user'})
         )
-        self.assertNotEqual(post, response)
+        # проверка что созданный пост != отредактированный пост
+        self.assertNotEqual(self.cls.post, response)
