@@ -42,7 +42,7 @@ class PostCreateFormTests(TestCase):
         post_count = Post.objects.count()
         all_post_id = Post.objects.values_list()
 
-        small_gif = (            
+        small_gif = (
              b'\x47\x49\x46\x38\x39\x61\x02\x00'
              b'\x01\x00\x80\x00\x00\x00\x00\x00'
              b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
@@ -81,7 +81,6 @@ class PostCreateFormTests(TestCase):
         ), all_post_id)
 
     def post_edit_(self):
-        post = self.cls.post
         form_data_edit = {
             'group': 'Тестовая группа',
             'text': 'Тестовый отредоктированный текст',
