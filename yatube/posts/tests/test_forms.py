@@ -40,7 +40,7 @@ class PostCreateFormTests(TestCase):
 
     def test_create_post(self):
         post_count = Post.objects.count()
-        all_post_id = Post.objects.values_list()
+        all_post_id = Post.objects.values_list('id').order_by('id')
 
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -69,30 +69,32 @@ class PostCreateFormTests(TestCase):
         )
         self.assertRedirects(response, reverse('posts:profile',
                              kwargs={'username': self.user.username}))
+        # проверка что id нового поста нету в базе
+        self.assertNotEqual(Post.objects.filter(
+            text='Тестовый текст',
+            group=self.group.id
+        ), all_post_id)
         self.assertEqual(Post.objects.count(), post_count + 1)
         self.assertTrue(
             Post.objects.filter(
                 text='Тестовый текст',
                 group=self.group.id
             ).exists())
-        self.assertNotEqual(Post.objects.filter(
-            text='Тестовый текст',
-            group=self.group.id
-        ), all_post_id)
 
-    def post_edit_(self):
+    def test_post_edit_(self):
         form_data_edit = {
             'group': 'Тестовая группа',
             'text': 'Тестовый отредоктированный текст',
         }
 
         response = self.author_client.post(
-            reverse('posts:post_edit'),
+            reverse('posts:post_edit',
+                kwargs={'post_id': self.post.id}),
             data=form_data_edit,
             follow=True
         )
         self.assertRedirects(response, reverse(
-            'posts:profile', kwargs={'username': 'test_user'})
+            'posts:post_detail', kwargs={'post_id': self.post.id})
         )
         # проверка что созданный пост != отредактированный пост
-        self.assertNotEqual(self.cls.post, response)
+        self.assertNotEqual(self.post, response)
