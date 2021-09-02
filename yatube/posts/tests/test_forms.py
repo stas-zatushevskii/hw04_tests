@@ -91,7 +91,7 @@ class PostCreateFormTests(TestCase):
             reverse(
                 'posts:post_edit',
                 kwargs={'post_id': self.post.id}
-            ),data=form_data_edit,
+            ), data=form_data_edit,
             follow=True
         )
         self.assertRedirects(response, reverse(
