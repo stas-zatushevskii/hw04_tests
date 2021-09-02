@@ -88,8 +88,9 @@ class PostCreateFormTests(TestCase):
         }
 
         response = self.author_client.post(
-            reverse('posts:post_edit',
-                kwargs={'post_id': self.post.id}),
+            reverse(
+            'posts:post_edit',
+            kwargs={'post_id': self.post.id}),
             data=form_data_edit,
             follow=True
         )

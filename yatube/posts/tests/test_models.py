@@ -25,4 +25,3 @@ class PostModelTest(TestCase):
         self.assertEqual(post.text, str(self.post.text[:15]))
         group = PostModelTest.group
         self.assertEqual(group.title, str(self.group.title))
-
