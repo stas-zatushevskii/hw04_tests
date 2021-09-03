@@ -1,12 +1,13 @@
 import shutil
 import tempfile
 
-from posts.models import Post, Group
+from django.shortcuts import get_list_or_404, get_object_or_404
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from posts.models import Post, Group
 User = get_user_model()
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -40,7 +41,7 @@ class PostCreateFormTests(TestCase):
 
     def test_create_post(self):
         post_count = Post.objects.count()
-        all_post_id = Post.objects.values_list('id').order_by('id')
+
 
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -67,19 +68,11 @@ class PostCreateFormTests(TestCase):
             data=form_data,
             follow=True
         )
+        # прверка что после создания поста редирект прошёл 
         self.assertRedirects(response, reverse('posts:profile',
                              kwargs={'username': self.user.username}))
-        # проверка что id нового поста нету в базе
-        self.assertNotEqual(Post.objects.filter(
-            text='Тестовый текст',
-            group=self.group.id
-        ), all_post_id)
+        # прверка что пост создался
         self.assertEqual(Post.objects.count(), post_count + 1)
-        self.assertTrue(
-            Post.objects.filter(
-                text='Тестовый текст',
-                group=self.group.id
-            ).exists())
 
     def test_post_edit_(self):
         form_data_edit = {
@@ -98,4 +91,4 @@ class PostCreateFormTests(TestCase):
             'posts:post_detail', kwargs={'post_id': self.post.id})
         )
         # проверка что созданный пост != отредактированный пост
-        self.assertNotEqual(self.post, response)
+        self.assertNotEqual(self.post.text, form_data_edit['text'])
