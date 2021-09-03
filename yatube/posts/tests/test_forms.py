@@ -66,9 +66,9 @@ class PostCreateFormTests(TestCase):
             data=form_data,
             follow=True
         )
-        # прверка что после создания поста редирект прошёл 
-        self.assertRedirects(response, reverse('posts:profile',
-            kwargs={'username': self.user.username}))
+        # прверка что после создания поста редирект прошёл
+        self.assertRedirects(response, reverse(
+            'posts:profile',kwargs={'username': self.user.username}))
         # прверка что пост создался
         self.assertEqual(Post.objects.count(), post_count + 1)
 
