@@ -40,6 +40,7 @@ class PostCreateFormTests(TestCase):
 
     def test_create_post(self):
         post_count = Post.objects.count()
+        all_post_id = Post.objects.values_list('id').order_by('id')
 
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -69,8 +70,16 @@ class PostCreateFormTests(TestCase):
         # прверка что после создания поста редирект прошёл
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': self.user.username}))
+
+        # а не было ли его до этого?
+        self.assertNotEqual(Post.objects.filter(pk=self.post.id), all_post_id)
+
         # прверка что пост создался
         self.assertEqual(Post.objects.count(), post_count + 1)
+
+        # а существует ли он?
+        self.assertTrue(
+            Post.objects.filter(pk=self.post.id).exists())
 
     def test_post_edit_(self):
         form_data_edit = {
