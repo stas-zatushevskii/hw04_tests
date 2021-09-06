@@ -41,7 +41,6 @@ class PostCreateFormTests(TestCase):
 
     def test_create_post(self):
         post_count = Post.objects.count()
-        all_post_id = Post.objects.values_list('id').order_by('id')
 
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -78,11 +77,9 @@ class PostCreateFormTests(TestCase):
         # а существует ли он?
         last_post_id = Post.objects.aggregate(Max('pk'))['pk__max']
         self.assertTrue(Post.objects.filter(
-                id=last_post_id,
-                text=form_data['text'],
-                group=form_data['group'],
-
-            ).exists())
+            id=last_post_id,
+            text=form_data['text'],
+            group=form_data['group']).exists())
 
     def test_post_edit_(self):
         form_data_edit = {
