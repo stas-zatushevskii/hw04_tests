@@ -1,6 +1,7 @@
 import shutil
 import tempfile
 
+from django.db.models import Max
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.test import Client, TestCase, override_settings
@@ -58,7 +59,6 @@ class PostCreateFormTests(TestCase):
         )
 
         form_data = {
-            'id': 1,
             'group': self.group.id,
             'text': 'Тестовый текст',
             'image': uploaded
@@ -72,19 +72,17 @@ class PostCreateFormTests(TestCase):
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': self.user.username}))
 
-        # а не было ли его до этого?
-        self.assertNotEqual(Post.objects.filter(pk=self.post.id), all_post_id)
-
         # прверка что пост создался
         self.assertEqual(Post.objects.count(), post_count + 1)
 
         # а существует ли он?
+        last_post_id = Post.objects.aggregate(Max('pk'))['pk__max']
+        self.assertTrue(Post.objects.filter(
+                id=last_post_id,
+                text=form_data['text'],
+                group=form_data['group'],
 
-        Post.objects.filter(
-                id = 1,
-                text='Тестовый текст', 
-                group=self.group.id 
-            ).exists()
+            ).exists())
 
     def test_post_edit_(self):
         form_data_edit = {
