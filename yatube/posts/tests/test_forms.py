@@ -58,6 +58,7 @@ class PostCreateFormTests(TestCase):
         )
 
         form_data = {
+            'id': 1,
             'group': self.group.id,
             'text': 'Тестовый текст',
             'image': uploaded
@@ -78,8 +79,12 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.count(), post_count + 1)
 
         # а существует ли он?
-        self.assertTrue(
-            Post.objects.filter(pk=self.post.id).exists())
+
+        Post.objects.filter(
+                id = 1,
+                text='Тестовый текст', 
+                group=self.group.id 
+            ).exists()
 
     def test_post_edit_(self):
         form_data_edit = {
